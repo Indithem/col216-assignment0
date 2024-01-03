@@ -1,0 +1,8 @@
+# vivado things
+vivado_project.hw
+vivado_project.cache
+vivado_project.ip_user_files
+vivado_project.runs
+vivado_project.sim
+vivado_project.xpr
+

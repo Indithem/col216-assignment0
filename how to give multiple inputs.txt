@@ -1,0 +1,13 @@
+You can use generics to do that.
+
+https://support.xilinx.com/s/article/64118?language=en_US
+
+/*
+Command Line mode:
+
+You can pass the generic/parameter value using a switch present with xelab command:
+
+  --generic_top arg                    Override generic or parameter of a top level design unit with specified value
+
+Example: xelab -generic_top "N=12" work.Counter
+*/
