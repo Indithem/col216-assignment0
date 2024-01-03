@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -33,8 +34,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity tb_multiplier is
     generic (
-        constant a: std_logic_vector(15 downto 0):=x"0005";
-        constant b: std_logic_vector(15 downto 0):=x"0002"
+        constant a: natural:=3;
+        constant b: natural:=2
     );
 end tb_multiplier;
 
@@ -48,8 +49,8 @@ architecture Behavioral of tb_multiplier is
         );
     end component;
 
-    signal a_signal: std_logic_vector(15 downto 0):=a;
-    signal b_signal: std_logic_vector(15 downto 0):=b;
+    signal a_signal: std_logic_vector(15 downto 0):=std_logic_vector(to_unsigned(a,16));
+    signal b_signal: std_logic_vector(15 downto 0):=std_logic_vector(to_unsigned(b,16));
     signal clock: std_logic:='0';
     signal done: std_logic;
     signal c: std_logic_vector(32 downto 0);
