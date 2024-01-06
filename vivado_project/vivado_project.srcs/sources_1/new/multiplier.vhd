@@ -53,7 +53,6 @@ component programmable_carry_adder is
     signal sub_ctrl: std_logic:= '0';
     signal position: natural;
     signal adder_in: std_logic_vector(31 downto 0);
-    signal addend: std_logic_vector(15 downto 0);
     signal adder_out: std_logic_vector(31 downto 0);
 
     type state_type is (give_to_adder, get_from_adder, completed, idle);
@@ -69,34 +68,53 @@ adder: programmable_carry_adder port map(
     position => position,
     a => adder_in,
     c => adder_out,
-    b => addend
+    b => multiplicand
 );
 
 
 --process that starts on rising edge of clock
 process(clock)
 variable shift_count: natural:= 0; --goes from 0 to 15
+variable prev_bit: std_logic:= '0'; 
 begin
 if rising_edge(clock) then
     case state is
         when get_from_adder =>
             running_sum <= adder_out;
             shift_count := shift_count + 1;
-            if shift_count = 16 then
-                state <= completed;
+            if shift_count > 15 then
+                if prev_bit='1' then
+                    sub_ctrl <= '0';
+                    position <= 16;
+                    adder_in <= running_sum;
+                    state <= idle;
+                    prev_bit := '0';
+                else
+                    state <= completed;
+                end if;
             else
                 state <= give_to_adder;
             end if;
         when give_to_adder =>
-            case multiplier(shift_count) is
-                when '1' =>
-                    addend <= multiplicand;
-                when others=>
-                    addend <= (others => '0');
-            end case;
-            adder_in <= running_sum;
-            position <= shift_count;
-            state <= idle;
+            if prev_bit=multiplier(shift_count) then
+                shift_count := shift_count + 1;
+                if shift_count>15 then
+                    state <= completed;
+                else
+                    state <= give_to_adder;
+                end if;
+            else
+                case multiplier(shift_count) is
+                    when '1' =>
+                        sub_ctrl <= '1';
+                    when others =>
+                        sub_ctrl <= '0';
+                end case;
+                prev_bit := multiplier(shift_count);
+                position <= shift_count;
+                adder_in <= running_sum;
+                state <= idle;
+            end if;
         when idle =>
             state <= get_from_adder;
         when completed =>

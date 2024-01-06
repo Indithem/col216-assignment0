@@ -61,7 +61,7 @@ begin
             when others =>
                 temp:=aInt;
         end case;
-        c<=std_logic_vector(to_signed((temp),32));
+        c<=std_logic_vector(to_signed((temp),32)); -- if this is positive, there will be no difference between the sign bit whatsoever
     end if ;
 end process;
 

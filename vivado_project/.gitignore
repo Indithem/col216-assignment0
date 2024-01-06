@@ -8,3 +8,4 @@ vivado_project.xpr
 .Xil
 *.jou
 *.log
+simulation_log.txt
