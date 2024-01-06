@@ -43,9 +43,9 @@ architecture Behavioral of tb_multiplier is
     component multiplier is
     Port ( multiplier : in STD_LOGIC_VECTOR (15 downto 0);
            multiplicand : in STD_LOGIC_VECTOR (15 downto 0);
-           product : out STD_LOGIC_VECTOR (32 downto 0):= (others => '0');
+           product : out STD_LOGIC_VECTOR (31 downto 0):= (others => '0');
            clock : in STD_LOGIC;
-           done : out STD_LOGIC:='0'
+           done : out STD_LOGIC
         );
     end component;
 
@@ -53,7 +53,7 @@ architecture Behavioral of tb_multiplier is
     signal b_signal: std_logic_vector(15 downto 0):=std_logic_vector(to_unsigned(b,16));
     signal clock: std_logic:='0';
     signal done: std_logic;
-    signal c: std_logic_vector(32 downto 0);
+    signal c: std_logic_vector(31 downto 0);
     signal cycles_count: integer:=0;
 begin
 
