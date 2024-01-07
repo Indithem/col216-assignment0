@@ -34,8 +34,8 @@ use IEEE.NUMERIC_STD.ALL;
 
 entity tb_multiplier is
     generic (
-        constant a: natural:=3;
-        constant b: natural:=2
+        constant a: natural:=65535;
+        constant b: natural:=65535
     );
 end tb_multiplier;
 

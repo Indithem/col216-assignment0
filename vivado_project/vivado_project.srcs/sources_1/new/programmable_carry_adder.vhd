@@ -34,8 +34,8 @@ entity programmable_carry_adder is
     Port (  sub_control : in STD_LOGIC;
             b : in STD_LOGIC_VECTOR (15 downto 0);
             position : in natural; --starts from 0, max is 31-16=15
-            a : in STD_LOGIC_VECTOR (31 downto 0);
-            c : out STD_LOGIC_VECTOR (31 downto 0);
+            a : in signed (32 downto 0);
+            c : out signed (32 downto 0);
             clock: in std_logic
         );
 end programmable_carry_adder;
@@ -44,24 +44,23 @@ architecture Behavioral of programmable_carry_adder is
 begin
         
 process (clock)
-    variable shifted_b:STD_LOGIC_VECTOR (31 downto 0);
-    variable aInt,bInt :integer;
-    variable temp:integer;
+    variable shifted_b:STD_LOGIC_VECTOR (32 downto 0);
+    variable bInt :signed(32 downto 0);
+    variable temp:signed(32 downto 0);
 begin
     if rising_edge(clock) then
-        aInt:=to_integer(signed(a));
         shifted_b:=(others => '0');
         shifted_b(position+15 downto position):=b;
-        bInt:=to_integer(signed(shifted_b));
+        bInt:=signed(shifted_b);
         case sub_control is
             when '0' =>
-                temp:=aInt+bInt;
+                temp:=a+bInt;
             when '1' =>
-                temp:=aInt-bInt;
+                temp:=a-bInt;
             when others =>
-                temp:=aInt;
+                temp:=a;
         end case;
-        c<=std_logic_vector(to_signed((temp),32)); -- if this is positive, there will be no difference between the sign bit whatsoever
+        c<=temp; -- if this is positive, there will be no difference between the sign bit whatsoever
     end if ;
 end process;
 

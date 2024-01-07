@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -45,19 +46,19 @@ component programmable_carry_adder is
     Port (  sub_control : in STD_LOGIC;
             b : in STD_LOGIC_VECTOR (15 downto 0);
             position : in natural; --starts from 0, max is 31-15
-            a : in STD_LOGIC_VECTOR (31 downto 0);
-            c : out STD_LOGIC_VECTOR (31 downto 0);
+            a : in signed (32 downto 0);
+            c : out signed (32 downto 0);
             clock: in std_logic
         );
     end component;
     signal sub_ctrl: std_logic:= '0';
     signal position: natural;
-    signal adder_in: std_logic_vector(31 downto 0);
-    signal adder_out: std_logic_vector(31 downto 0);
+    signal adder_in: signed(32 downto 0):= (others => '0');
+    signal adder_out: signed(32 downto 0):= (others => '0');
 
     type state_type is (give_to_adder, get_from_adder, completed, idle);
     signal state: state_type ;
-    signal running_sum: std_logic_vector(31 downto 0):= (others => '0');
+    signal running_sum: signed(32 downto 0):= (others => '0');
 
 begin
 
@@ -74,7 +75,7 @@ adder: programmable_carry_adder port map(
 
 --process that starts on rising edge of clock
 process(clock)
-variable shift_count: natural:= 0; --goes from 0 to 15
+variable shift_count: natural:= 0; --goes from 0 to 16
 variable prev_bit: std_logic:= '0'; 
 begin
 if rising_edge(clock) then
@@ -99,9 +100,15 @@ if rising_edge(clock) then
             if prev_bit=multiplier(shift_count) then
                 shift_count := shift_count + 1;
                 if shift_count>15 then
-                    state <= completed;
-                else
-                    state <= give_to_adder;
+                    if prev_bit='1' then
+                        sub_ctrl <= '0';
+                        position <= 16;
+                        adder_in <= running_sum;
+                        state <= idle;
+                        prev_bit := '0';
+                    else
+                        state <= completed;
+                    end if;
                 end if;
             else
                 case multiplier(shift_count) is
@@ -119,7 +126,7 @@ if rising_edge(clock) then
             state <= get_from_adder;
         when completed =>
             done <= '1';
-            product <= running_sum;
+            product <= std_logic_vector(running_sum(31 downto 0));
         when others=>
             state <= give_to_adder;
     end case;

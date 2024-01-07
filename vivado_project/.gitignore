@@ -5,6 +5,8 @@ vivado_project.ip_user_files
 vivado_project.runs
 vivado_project.sim
 vivado_project.xpr
+vivado_project.srcs/sources_1/bd
+vivado_project.srcs/utils_1
 .Xil
 *.jou
 *.log
