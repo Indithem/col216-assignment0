@@ -43,7 +43,7 @@ architecture Behavioral of tb_multiplier is
     component multiplier is
     Port ( multiplier : in STD_LOGIC_VECTOR (15 downto 0);
            multiplicand : in STD_LOGIC_VECTOR (15 downto 0);
-           product : out STD_LOGIC_VECTOR (31 downto 0):= (others => '0');
+           product : out STD_LOGIC_VECTOR (32 downto 0):= (others => '0');
            clock : in STD_LOGIC;
            done : out STD_LOGIC;
            reset : in STD_LOGIC 
