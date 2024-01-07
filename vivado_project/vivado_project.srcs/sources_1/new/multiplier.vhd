@@ -21,6 +21,7 @@
 
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
 
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
@@ -54,6 +55,7 @@ component programmable_carry_adder is
     signal position: natural;
     signal adder_in: std_logic_vector(31 downto 0);
     signal adder_out: std_logic_vector(31 downto 0);
+    signal two_complement_multiplicand: std_logic_vector(15 downto 0);
 
     type state_type is (give_to_adder, get_from_adder, completed, idle);
     signal state: state_type ;
@@ -71,6 +73,11 @@ adder: programmable_carry_adder port map(
     b => multiplicand
 );
 
+--process to two's complement of multiplicand
+process(multiplicand)
+begin
+    two_complement_multiplicand <= std_logic_vector(unsigned(not multiplicand)+1);
+end process;
 
 --process that starts on rising edge of clock
 process(clock)
