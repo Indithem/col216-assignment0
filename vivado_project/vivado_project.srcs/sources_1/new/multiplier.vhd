@@ -37,6 +37,7 @@ entity multiplier is
            multiplicand : in STD_LOGIC_VECTOR (15 downto 0);
            product : out STD_LOGIC_VECTOR (31 downto 0):= (others => '0');
            clock : in STD_LOGIC;
+           reset: in std_logic;
            done : out STD_LOGIC:='0'
         );
 end multiplier;
@@ -79,6 +80,7 @@ variable shift_count: natural:= 0; --goes from 0 to 16
 variable prev_bit: std_logic:= '0'; 
 begin
 if rising_edge(clock) then
+    if reset='0' then
     case state is
         when get_from_adder =>
             running_sum <= adder_out;
@@ -130,6 +132,13 @@ if rising_edge(clock) then
         when others=>
             state <= give_to_adder;
     end case;
+    else
+        state <= give_to_adder;
+        shift_count := 0;
+        prev_bit := '0';
+        running_sum <= (others => '0');
+        done <= '0';
+    end if;
 end if ;
 end process;
 end Behavioral;
